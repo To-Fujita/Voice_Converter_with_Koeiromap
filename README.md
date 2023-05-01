@@ -9,7 +9,7 @@ This is a voice converter for Japanese based on the Koeiromap & Koeiro API. You 
 
 ## 3. Demo
 
-![Voice Converter](https://to-fujita.github.io/Images/Voice_Converter.png "Images for Voice Converter")
+![Voice Converter](https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap.jpg "Images for Voice Converter with Koeiromap")
 
 [index.html](https://to-fujita.github.io/Voice_Converter_with_Koeiromap/index.html): This is a voice convert program based on Koeiromap & Koeiro API.
 
