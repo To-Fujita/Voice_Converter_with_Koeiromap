@@ -387,7 +387,7 @@
         }
 
         recognition.onend = (event) => {
-            if (Flag_Speech == 0) {
+            if (Flag_Speech == 1) {
                 VoiceInputOff();
                 clearTimeout(ST_id);
             } 
