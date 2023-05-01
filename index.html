@@ -1,7 +1,7 @@
 <!-- Android では、Google Chrome等の省電力設定を解除する必要があります。 -->
 <!DOCTYPE html>
 <html>
-  <title>Index for Voice Converter with Koeiro by T. Fujita, dated 2023/05/01</title>
+  <title>Index.html for Voice Converter with Koeiro by T. Fujita, dated 2023/05/01</title>
 
   <head>
     <meta charset="utf-8" />
@@ -327,33 +327,36 @@
             $("#chatbox").append(botHtml);     
             speech(rawText);
             document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
-            if (Flag_Speech == 1) {
-                VoiceInputOn();
-            }
+
         }
 
 // 音声合成での発声（Koeiro）
         function speech(answer) {
             VoiceInputOff();
             fetch("https://api.rinna.co.jp/models/cttse/koeiro", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                text: answer,
-                speaker_x: voice_x,
-                speaker_y: voice_y,
-                style: voice_style,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text: answer,
+                    speaker_x: voice_x,
+                    speaker_y: voice_y,
+                    style: voice_style,
 
-            }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data.audio);
-            const voice = new Audio(data.audio);
-            voice.play();
-        });
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.audio);
+                const voice = new Audio(data.audio);
+                voice.play();
+                voice.addEventListener("ended", function() {
+                    if (Flag_Speech == 1) {
+                        VoiceInputOn();
+                    }
+                }, false);
+            });
         }
 
 // 音声認識処理
@@ -384,7 +387,8 @@
         recognition.onend = (event) => {
             if (Flag_Speech == 0) {
                 VoiceInputOff();
-            } else {
+            } 
+            else if (voice.ended) {
                 VoiceInputOn();
             }
         }
