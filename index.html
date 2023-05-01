@@ -1,0 +1,663 @@
+<!-- Android では、Google Chrome等の省電力設定を解除する必要があります。 -->
+<!DOCTYPE html>
+<html>
+  <title>Index for Voice Converter with Koeiro by T. Fujita, dated 2023/05/01</title>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">  
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="./css/bot_R1.css" />
+    <link rel="stylesheet" type="text/css" href="./css/dialog_R1.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./js/encoding.min.js"></script>
+  </head>
+  <body>
+    <Center><h1>
+      <img src="./images/R_011_R.png" alt="CANDICE" style="width:50px;height:50px;vertical-align:bottom;"/>
+      日本語ボイスコンバータ／with Koeiromap & Koeiro API
+      <img src="./images/R_012_R.png" alt="CANDICE" style="width:50px;height:50px;vertical-align:bottom;transform: scale(-1, 1);"/><br>
+      <div id="Speech_Flag">
+        <input type="button" class="normalButton" style="position:absolute; top:60px; left:10%; font-size: 20px; background-color: #ff0000; " value="音声入力 OFF" onclick="OnButtonClick_01();">
+      </div>
+      <div id="Voice_Flag">
+        <input type="button" class="normalButton" style="position:absolute; top:60px; left:45%; font-size: 20px; background-color: #0000ff; " value="音声変更" onclick="Dialog_open_VoiceOptions();">
+      </div>
+      <input type="button" class="normalButton" value="設　定" style="position:absolute; top:60px; right:10%; font-size: 20px;" onclick="Dialog_open_menu();"/>
+    </h1></Center>
+    <div class="box"></div>
+    <div class="boxed" style="position: absolute; top:120px; left:3%;">
+      <div>
+        <div id="chatbox">
+          <p class="botText">
+            <img src="./images/F021a_R.png" alt="BOT" style="width:50px;height:50px;vertical-align:bottom;"/>
+            <span>これは、rinna株式会社が提供するKoeiromap及びKoeiro APIを利用した音声変換器です。<br>
+              入力された言葉を指定された音声に変換します。　なお、音声変換に時間がかかるのはお許し下さいね！💖
+            </span>
+          </p>
+        </div>
+        <div id="userInput" style="font-size: 2em;">
+          <input id="textInput" type="text" name="msg" placeholder="Message" />
+        </div>
+      </div>
+    </div>
+
+<!-- Dialog_Menu -->
+<dialog dialog id="dialog_menu">
+    <center><font size="4" color="#fff">
+        ダイアログ（メニュー）
+    </font></center>
+    <hr>
+    <nav class="nav">
+      <ul class="nav__menu"><font size="2">
+        <li class="nav__menu-item"><a>Informations</a>
+            <ul class="nav__submenu">
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_information()">Information</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_manual()">Manual</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_profile()">Profile</a></li>
+            </ul>                
+        </li>
+        <li class="nav__menu-item"><a>Bot Options</a>
+            <ul class="nav__submenu">
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_botIcon()">Bot's Icon</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_botFile()">Icon from File</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_VoiceOptions()">Voice Options</a></li>
+            </ul>
+        </li>
+        <li class="nav__menu-item"><a>User Options</a>
+            <ul class="nav__submenu">
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_userIcon_Boy()">Boy's Icon</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_userIcon_Girl()">Girl's Icon</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_userFile()">Icon from File</a></li>
+            </ul>
+        </li>
+        <li class="nav__menu-item"><a>Other Options</a>
+            <ul class="nav__submenu">
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_dummy()">Dummy</a></li>
+            </ul>
+        </li>
+      </font></ul>
+    </nav>
+    <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_menu()">
+</dialog>
+
+<!-- Dialog Box for Information -->
+<dialog dialog id="dialog_information">
+    <center>
+        ダイアログ（Information）
+    </center>
+    <hr>
+・これは、情報ウィンドウです。<br><br>
+・Microsoft Edge及びGoogle Chrome対応の音声変換器です。<br><br>
+・「設定」から各種設定が可能です。<br><br>
+・音声の変更、各アイコンの変更が出来ます。<br><br>
+    <hr>
+    <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_information()">
+</dialog>
+
+<!-- Dialog Box for Manual -->
+<dialog dialog id="dialog_manual">
+    <center>
+        ダイアログ（Manual）
+    </center>
+    <hr>
+    <center>
+    <textarea rows="10" cols="50" readonly style="resize: none; width:480px; height:250px; text-align: left;">
+・本プログラムは、rinna株式会社が提供するKoeiromap及びKoeiro APIを利用した音声変換器です。
+・キー入力あるいは音声入力された言葉を指定された音声に変換して出力します。
+・「Koeiromap及びKoeiro API」関連のライセンス及び利用規約については、「http://koeiromap.rinna.jp/」を参照ください。
+    </textarea>
+    </center>
+    <hr>
+    <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_manual()">
+</dialog>
+
+<!-- Dialog Box for Profile -->
+<dialog dialog id="dialog_profile">
+    <center>
+        ダイアログ（Profile）
+    </center>
+    <hr>
+    <div class="profile_wrapper">
+        <div class="card">
+            <div class="me">
+                <div class="eye"></div>
+            </div>
+            <div class="text">
+                 HAL bou
+            </div>
+        </div>
+    </div>
+    <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_profile()">
+</dialog>
+
+<!-- Select Bot Icon -->
+<dialog dialog id="dialog_botIcon">
+    <center>
+        ダイアログ（Select Bot Icon）
+    </center>
+    <hr>
+    <div class="radiobutton">
+        <input type="radio" id="radio1" name="Dialog_radio_bot" value="./images/F021a_R.png" checked>
+        <label for="radio1">　<img border="1" src="./images/F021a_R.png" width="64" height="64" alt="イラスト1"></label><br>
+        <input type="radio" id="radio2" name="Dialog_radio_bot" value="./images/R_011_R.png">
+        <label for="radio2">　<img border="1" src="./images/R_011_R.png" width="64" height="64" alt="イラスト2"></label><br>
+        <input type="radio" id="radio3" name="Dialog_radio_bot" value="./images/R_012_R.png">
+        <label for="radio3">　<img border="1" src="./images/R_012_R.png" width="64" height="64" alt="イラスト3"></label><br>
+    </div>
+    <hr>
+    <div class="radiobutton_mid" style="top: -238px;">
+        <input type="radio" id="radio4" name="Dialog_radio_bot" value="./images/R_017_R.png">
+        <label for="radio4">　<img border="1" src="./images/R_017_R.png" width="64" height="64" alt="イラスト4"></label><br>
+        <input type="radio" id="radio5" name="Dialog_radio_bot" value="./images/R_015_R.png">
+        <label for="radio5">　<img border="1" src="./images/R_015_R.png" width="64" height="64" alt="イラスト5"></label><br>
+    </div>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_botIcon()">           
+    <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_botIcon()">
+</dialog>
+
+<!-- Select User Icon Boy -->
+<dialog dialog id="dialog_userIcon_Boy">
+    <center>
+        ダイアログ（Select User Icon/Boy）
+    </center>
+    <hr>
+    <div class="radiobutton">
+        <input type="radio" id="radio11" name="Dialog_radio_user_Boy" value="./images/M004_La.png" checked>
+        <label for="radio11">　<img border="1" src="./images/M004_La.png" width="64" height="64" alt="イラスト1"></label><br>
+        <input type="radio" id="radio12" name="Dialog_radio_user_Boy" value="./images/M008_L.png">
+        <label for="radio12">　<img border="1" src="./images/M008_L.png" width="64" height="64" alt="イラスト2"></label><br>
+        <input type="radio" id="radio13" name="Dialog_radio_user_Boy" value="./images/M011_L.png">
+        <label for="radio13">　<img border="1" src="./images/M011_L.png" width="64" height="64" alt="イラスト3"></label><br>
+    </div>
+    <hr>
+    <div class="radiobutton_mid" style="top: -238px;">
+        <input type="radio" id="radio14" name="Dialog_radio_user_Boy" value="./images/M012_L.png">
+        <label for="radio14">　<img border="1" src="./images/M012_L.png" width="64" height="64" alt="イラスト4"></label><br>
+        <input type="radio" id="radio15" name="Dialog_radio_user_Boy" value="./images/M026_La.png">
+        <label for="radio15">　<img border="1" src="./images/M026_La.png" width="64" height="64" alt="イラスト5"></label><br>
+    </div>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_userIcon_Boy()">           
+    <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_userIcon_Boy()">
+</dialog>
+
+<!-- Select User Icon Girl -->
+<dialog dialog id="dialog_userIcon_Girl">
+    <center>
+        ダイアログ（Select User Icon/Girl）
+    </center>
+    <hr>
+    <div class="radiobutton">
+        <input type="radio" id="radio21" name="Dialog_radio_user_Girl" value="./images/F003_L.png" checked>
+        <label for="radio21">　<img border="1" src="./images/F003_L.png" width="64" height="64" alt="イラスト1"></label><br>
+        <input type="radio" id="radio22" name="Dialog_radio_user_Girl" value="./images/F007_L.png">
+        <label for="radio22">　<img border="1" src="./images/F007_L.png" width="64" height="64" alt="イラスト2"></label><br>
+        <input type="radio" id="radio23" name="Dialog_radio_user_Girl" value="./images/F014_L.png">
+        <label for="radio23">　<img border="1" src="./images/F014_L.png" width="64" height="64" alt="イラスト3"></label><br>
+    </div>
+    <hr>
+    <div class="radiobutton_mid" style="top: -238px;">
+        <input type="radio" id="radio24" name="Dialog_radio_user_Girl" value="./images/F019_L.png">
+        <label for="radio24">　<img border="1" src="./images/F019_L.png" width="64" height="64" alt="イラスト4"></label><br>
+        <input type="radio" id="radio25" name="Dialog_radio_user_Girl" value="./images/F047_L.png">
+        <label for="radio25">　<img border="1" src="./images/F047_L.png" width="64" height="64" alt="イラスト5"></label><br>
+    </div>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_userIcon_Girl()">           
+    <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_userIcon_Girl()">
+</dialog>
+
+<!-- Icon Load form File -->
+<dialog dialog id="dialog_imageFile">
+    <center>
+        ダイアログ（File Input Image File）
+    </center>
+    <hr>
+    <span id="image_File" style="font-size: 16px;">　Bot用画像ファイルの選択：　</span>
+    <form name="photoinput_image">
+        <center>　
+            <input type="file" accept="image/*" name="select_imageFile" id="select_imageFile" value="" onchange="updateImageDisplay_File()">
+            <div class="preview">
+                <p>Photo File is not selected.</p>
+            </div>
+        </center>
+    </form>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_imageFile()">           
+    <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_imageFile()">
+</dialog>
+
+<!-- Dialog Box for Voice Options -->
+<dialog dialog id="dialog_VoiceOptions">
+    <center>
+        ダイアログ（Voice Options）
+    </center>
+    <hr>
+    <span id="R_Slider" style="position:absolute; top:13%; left:20%; color:#000000">Voice-x Value= 0</span>  
+    <div class="range" style="position:absolute; top:20%; left:5%; background-color: #ff0000;">
+        <input type="range" min="-300" max="300" id="R_Range" value="0" onchange="showValue()">
+    </div>
+    <span id="B_Slider" style="position:absolute; top:30%; left:20%; color:#000000">Voice-y Value= 0</span>  
+    <div class="range" style="position:absolute; top:37%; left:5%; background-color: #0000ff;">
+        <input type="range" min="-300" max="300" id="B_Range" value="0" onchange="showValue()">
+    </div>
+    <span style="position:absolute; top:50%; left:5%; font-size: 1em;">　音声スタイルの選択：　</span>
+    <select class="select" name="V_Style" id="select_V_Style" style="position:absolute; top:50%; left:60%; font-size: 1em;" >
+        <option value="1">talk</option>
+        <option value="2">happy</option>
+        <option value="3">sad</option>
+        <option value="4">angry</option>
+        <option value="5">fear</option>
+        <option value="6">surprised</option>
+    </select>
+    <div style="position:absolute; top:65%; left:2%; font-size: 0.75em;">
+        Y軸のプラス側が女性、マイナス側が男性の声ですって！
+    </div>
+    <br><br><br><br><br><br><br><br><br><br>
+    <hr>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_VoiceOptions()">
+    <input type="button" class="normalButton" value="音声テスト" onclick="Dialog_test_VoiceOptions()" style="position:absolute; bottom:2px; left:40%;">
+    <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_VoiceOptions()">
+</dialog>
+
+<!-- Dialog Box for Dummy -->
+<dialog dialog id="dialog_dummy">
+    <center>
+        ダイアログ（Dummy）
+    </center>
+    <hr>
+・これは、ダミー・ウィンドウです。<br>
+    <br><br>
+    <br><br>
+    <hr>
+    <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_dummy()">
+</dialog>
+
+    <script>
+        let bot_icon = "./images/F021a_R.png"
+        let user_icon = "./images/M008_L.png"
+        let Speak = document.getElementById('Speech_Flag');
+        let Voice = document.getElementById('Voice_Flag');
+        let Flag_Speech = 0;
+        let image;
+        let image_Flag = 0;
+        let File_Input_Title = document.getElementById('image_File');
+        SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+        let recognition = new SpeechRecognition();
+        recognition.lang = 'ja-JP';
+        recognition.interimResults = false;
+        recognition.continuous = true;
+
+        let voice_x = 0;
+        let voice_y = 0;
+        let voice_style = "talk";
+        let temp_voice_x = 0;
+        let temp_voice_y = 0;
+        let temp_voice_style = "talk";
+
+// 音声入力、音声認識のON/OFF設定
+        function OnButtonClick_01() {
+            if (Flag_Speech == 1) {
+                Flag_Speech = 0;
+                VoiceInputOff();
+            }
+            else {
+                Flag_Speech = 1;
+                VoiceInputOn();
+            }
+        }
+        function VoiceInputOff() {  
+            Speak.innerHTML = '<input type="button" class="normalButton" style="position:absolute; top:60px; left:10%; font-size: 20px; background-color: #ff0000;" value="音声入力 OFF" onclick="OnButtonClick_01();">';
+            recognition.stop();
+        }
+        function VoiceInputOn() {
+            Speak.innerHTML = '<input type="button" class="normalButton" style="position:absolute; top:60px; left:10%; font-size: 20px;" value="音声入力 ON " onclick="OnButtonClick_01();">';
+            recognition.start();
+        }
+
+// 入出力
+        function getBotResponse() {
+            var rawText = $("#textInput").val();
+            var userHtml = '<p class="userText"><span>' + rawText + 
+            '</span><img src=' + user_icon + ' alt="USER" style="width:50px;height:50px;vertical-align:bottom;"/></p>';
+            $("#textInput").val("");
+            $("#chatbox").append(userHtml);
+            document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
+            var botHtml = '<p class="botText"><img src=' + bot_icon + ' alt="BOT" style="width:50px;height:50px;vertical-align:bottom;"/><span>' + rawText + '</span></p>';
+            $("#chatbox").append(botHtml);     
+            speech(rawText);
+            document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
+            if (Flag_Speech == 1) {
+                VoiceInputOn();
+            }
+        }
+
+// 音声合成での発声（Koeiro）
+        function speech(answer) {
+            VoiceInputOff();
+            fetch("https://api.rinna.co.jp/models/cttse/koeiro", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                text: answer,
+                speaker_x: voice_x,
+                speaker_y: voice_y,
+                style: voice_style,
+
+            }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data.audio);
+            const voice = new Audio(data.audio);
+            voice.play();
+        });
+        }
+
+// 音声認識処理
+        recognition.onresult = (event) => {
+          let interimTranscript = '';     // 暫定の認識結果（Androidでは、うまく機能しない）
+          let finalTranscript = '';       // 確定した認識結果
+          let question = '';
+          if (Flag_Speech == 0) {
+            answer = null;
+            return;
+          }      
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript = event.results[i][0].transcript;
+            } else {
+              interimTranscript = '';
+            }
+          }
+          question = finalTranscript;
+          if (question.length > 0) {
+            if (question != undefined) {
+              document.getElementById("textInput").value = question;
+              getBotResponse();
+            }
+          }        
+        }
+
+        recognition.onend = (event) => {
+            if (Flag_Speech == 0) {
+                VoiceInputOff();
+            } else {
+                VoiceInputOn();
+            }
+        }
+
+// Return Key 入力時の処理
+        $("#textInput").keypress(function(e) {
+          if (e.which == 13) {
+            getBotResponse();
+          }
+        });
+
+// for Dialog Box
+        function Dialog_open_menu() {
+            dialog_menu.showModal();
+        }
+        function Dialog_close_menu() {
+            dialog_menu.close();
+        }
+
+        function Dialog_open_manual() {
+            dialog_menu.close();
+            dialog_manual.showModal();
+        }
+        function Dialog_close_manual() {
+            dialog_manual.close();
+        }
+
+        function Dialog_open_information() {
+            dialog_menu.close();
+            dialog_information.showModal();
+        }
+        function Dialog_close_information() {
+            dialog_information.close();
+        }
+
+        function Dialog_open_profile() {
+            dialog_menu.close();
+            dialog_profile.showModal();
+        }
+        function Dialog_close_profile() {
+            dialog_profile.close();
+        }
+
+// for Profile Wrapper
+        var $wrap = $('.profile_wrapper'),
+            $lEye = $('.eye'),
+            lFollowX = 5,
+            lFollowY = 10,
+            x = 0,
+            y = 0,
+            friction = 1 / 12;
+
+        function animate() {
+            x += (lFollowX - x) * friction;
+            y += (lFollowY - y) * friction;
+            $lEye.css({
+                '-webit-transform': 'translate(' + -x + 'px, ' + -y + 'px)',
+                '-moz-transform': 'translate(' + -x + 'px, ' + -y + 'px)',
+                'transform': 'translate(' + -x + 'px, ' + -y + 'px)' 
+            });
+            $wrap.css({
+                'transform': 'translate(-50%, -50%) perspective(600px) rotateY(' + -x + 'deg) rotateX(' + y + 'deg)' 
+            });
+            window.requestAnimationFrame(animate);
+        }
+
+        $(window).on('mousemove click', function (e) {
+            var lMouseX = Math.max(-100, Math.min(100, $(window).width() / 2 - e.clientX));
+            var lMouseY = Math.max(-100, Math.min(100, $(window).height() / 2 - e.clientY));
+            lFollowX = 12 * lMouseX / 100;          // 100 : 12 = lMouxeX : lFollow
+            lFollowY = 10 * lMouseY / 100;
+        });
+        animate();
+
+// Select Bot Icon
+        function Dialog_open_botIcon() {
+            dialog_menu.close();
+            dialog_botIcon.showModal();
+        }
+        function Dialog_cancel_botIcon() {
+            dialog_botIcon.close();
+        }
+        function Dialog_close_botIcon() {
+            var elements = document.getElementsByName('Dialog_radio_bot');
+            var len = elements.length;
+            var checkValue = '';
+
+            for (let i = 0; i < len; i++){
+                if (elements.item(i).checked){
+                    checkValue = elements.item(i).value;
+                }
+            }
+            bot_icon = checkValue;
+            dialog_botIcon.close();
+        }
+
+// Select User Icon (Boy)
+        function Dialog_open_userIcon_Boy() {
+            dialog_menu.close();
+            dialog_userIcon_Boy.showModal();
+        }
+        function Dialog_cancel_userIcon_Boy() {
+            dialog_userIcon_Boy.close();
+        }
+        function Dialog_close_userIcon_Boy() {
+            var elements = document.getElementsByName('Dialog_radio_user_Boy');
+            var len = elements.length;
+            var checkValue = '';
+
+            for (let i = 0; i < len; i++){
+                if (elements.item(i).checked){
+                checkValue = elements.item(i).value;
+                }
+            }
+            user_icon = checkValue;
+            dialog_userIcon_Boy.close();
+        }
+
+// Select User Icon (Girl)
+        function Dialog_open_userIcon_Girl() {
+            dialog_menu.close();
+            dialog_userIcon_Girl.showModal();
+        }
+        function Dialog_cancel_userIcon_Girl() {
+            dialog_userIcon_Girl.close();
+        }
+        function Dialog_close_userIcon_Girl() {
+            var elements = document.getElementsByName('Dialog_radio_user_Girl');
+            var len = elements.length;
+            var checkValue = '';
+
+            for (let i = 0; i < len; i++){
+                if (elements.item(i).checked){
+                    checkValue = elements.item(i).value;
+                }
+            }
+            user_icon = checkValue;
+            dialog_userIcon_Girl.close();
+        }
+
+        function Dialog_open_botFile() {
+            image_Flag = 0;
+            File_Input_Title.innerHTML = "　Bot用画像ファイルの選択：　";
+            dialog_menu.close();
+            dialog_imageFile.showModal();
+        }
+
+        function Dialog_open_userFile() {
+            image_Flag = 1;
+            File_Input_Title.innerHTML = "　User用画像ファイルの選択：　";
+            dialog_menu.close();
+            dialog_imageFile.showModal();
+        }
+
+        function Dialog_close_imageFile() {
+            if (image_Flag == 0) {
+                bot_icon = image.src;
+            }
+            else {
+                user_icon = image.src;
+            }
+            dialog_imageFile.close();
+        }
+        function Dialog_cancel_imageFile() { 
+            dialog_imageFile.close();
+        }
+// Load Image File
+        function updateImageDisplay_File() {
+            var preview = document.querySelector('.preview');
+            var file_input = $('#select_imageFile');
+            var file = file_input[0].files[0];
+            var para = document.createElement('p');
+            if(file === undefined) {
+                para.textContent = 'Photo File is not selected!';
+                preview.removeChild(preview.childNodes.item(0));
+                preview.appendChild(para);
+            } else {
+                while(preview.firstChild){
+                    preview.removeChild(preview.firstChild);
+                }
+                preview.appendChild(para);
+                image = document.createElement('img');
+                image.src = window.URL.createObjectURL(file);
+                preview.appendChild(image);
+            }
+        }
+
+// Voice Options
+        var R_slider_Val =document.getElementById('R_Slider');
+        var R_range_Val = document.getElementById('R_Range');
+        var B_slider_Val =document.getElementById('B_Slider');
+        var B_range_Val = document.getElementById('B_Range');
+        var select = document.getElementById('select_V_Style');
+        var temp = "";
+
+        select.onchange = function(){
+            temp = this.value;
+        }
+        function Dialog_open_VoiceOptions() {
+            VoiceInputOff();
+            dialog_menu.close();
+            dialog_VoiceOptions.showModal();
+            temp_voice_x = voice_x;
+            temp_voice_y = voice_y;
+            temp_voice_style = voice_style;
+        }
+        function Dialog_close_VoiceOptions() {
+            voice_x = Number(R_range_Val.value) /100;
+            voice_y = Number(B_range_Val.value) /100;
+            if(temp == 1) {
+                voice_style = "talk"
+            } else if (temp == 2) {
+                voice_style = "happy"
+            } else if (temp == 3) {
+                voice_style = "sad"
+            } else if (temp == 4) {
+                voice_style = "angry"
+            } else if (temp == 5) {
+                voice_style = "fear"
+            } else if (temp == 6) {
+                voice_style = "surprised"
+            } else {
+                voice_style = "talk"
+            }
+            dialog_VoiceOptions.close();
+            if (Flag_Speech == 1) {
+                VoiceInputOn();
+            }
+        }
+        function Dialog_cancel_VoiceOptions() {
+            dialog_VoiceOptions.close();
+            voice_x = temp_voice_x;
+            voice_y = temp_voice_y;
+            voice_style = temp_voice_style;
+            if (Flag_Speech == 1) {
+                VoiceInputOn();
+            }
+        }
+        function showValue(){
+                R_slider_Val.innerHTML = "Voice-x Value= " + String(Number(R_range_Val.value) /100);
+                B_slider_Val.innerHTML = "Voice-y Value= " + String(Number(B_range_Val.value) /100);
+            }
+        function Dialog_test_VoiceOptions(){
+            voice_x = Number(R_range_Val.value) /100;
+            voice_y = Number(B_range_Val.value) /100;
+            if(temp == 1) {
+                voice_style = "talk"
+            } else if (temp == 2) {
+                voice_style = "happy"
+            } else if (temp == 3) {
+                voice_style = "sad"
+            } else if (temp == 4) {
+                voice_style = "angry"
+            } else if (temp == 5) {
+                voice_style = "fear"
+            } else if (temp == 6) {
+                voice_style = "surprised"
+            } else {
+                voice_style = "talk"
+            }
+
+            speech("本日は晴天なり。テスト、ワン、ツー、スリー。")
+        }
+
+// for Dummy
+        function Dialog_open_dummy() {
+            dialog_menu.close();
+            dialog_dummy.showModal();            
+        }
+        function Dialog_close_dummy() {
+            dialog_dummy.close();            
+        }
+
+    </script>
+  </body>
+</html>
