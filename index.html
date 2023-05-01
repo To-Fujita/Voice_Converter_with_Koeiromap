@@ -1,7 +1,7 @@
 <!-- Android では、Google Chrome等の省電力設定を解除する必要があります。 -->
 <!DOCTYPE html>
 <html>
-  <title>Index.html for Voice Converter with Koeiro by T. Fujita, dated 2023/05/01</title>
+  <title>Index.html for Voice Converter with Koeiro by T. Fujita 2023/05/01</title>
 
   <head>
     <meta charset="utf-8" />
@@ -287,7 +287,7 @@
         recognition.lang = 'ja-JP';
         recognition.interimResults = false;
         recognition.continuous = true;
-
+        let ST_id;
         let voice_x = 0;
         let voice_y = 0;
         let voice_style = "talk";
@@ -317,6 +317,8 @@
 
 // 入出力
         function getBotResponse() {
+            VoiceInputOff();
+            clearTimeout(ST_id);
             var rawText = $("#textInput").val();
             var userHtml = '<p class="userText"><span>' + rawText + 
             '</span><img src=' + user_icon + ' alt="USER" style="width:50px;height:50px;vertical-align:bottom;"/></p>';
@@ -387,10 +389,17 @@
         recognition.onend = (event) => {
             if (Flag_Speech == 0) {
                 VoiceInputOff();
+                clearTimeout(ST_id);
             } 
             else if (voice.ended) {
+                ST_id = setTimeout(confirm(), 10000);
+            }
+        }
+        function confirm() {
+            if (Flag_Speech == 1) {
                 VoiceInputOn();
             }
+            clearTimeout(ST_id);
         }
 
 // Return Key 入力時の処理
