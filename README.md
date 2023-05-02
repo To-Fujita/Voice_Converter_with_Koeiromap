@@ -15,6 +15,11 @@ This is a voice converter for Japanese based on the Koeiromap & Koeiro API. You 
 ## 4. Details
 I have confirmed this program on the Microsoft Edge and Google Chrome on Windows 10/11 or Android.  
 
+### Usage
+(1) Please click "index/html" at the "3. Demo" above.  
+(2) If you input the text data by the keyboard, please input to the text box by Japanese. After input the "return key", the input text data will be read with the specified voice.  
+(3) If you want to convert your voice to specified voice, please click the "音声入力OFF" above. Then, the display will be changed to the "音声入力ON". Afer that, please speak any japanese word, then, the specified voice will be outputted.  
+(4) If you change the specified voice, please click the "音声変更", then set the "Voice-x", the "Voice-y" or the "音声スタイル".
   
 ## 5. History
 2023/05/01: Upload the first version.  
