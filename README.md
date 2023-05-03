@@ -6,6 +6,8 @@ This is a voice converter for Japanese based on the Koeiromap & Koeiro API. You 
 ## 2. Operational Environment
 - Browser: Microsoft Edge or Google Chrome on Windows 10/11 or Android
 
+Note: The safari and the firefox is not supported.
+
 ## 3. Demo
 [index.html](https://to-fujita.github.io/Voice_Converter_with_Koeiromap/index.html): This is a voice convert program based on Koeiromap & Koeiro API.
   
