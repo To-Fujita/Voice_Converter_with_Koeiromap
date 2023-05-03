@@ -11,8 +11,10 @@ Note: The safari and the firefox is not supported.
 ## 3. Demo
 [index.html](https://to-fujita.github.io/Voice_Converter_with_Koeiromap/index.html): This is a voice convert program based on Koeiromap & Koeiro API.
   
-![Voice Converter_00](https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap.jpg "Images for Voice Converter with Koeiromap")
-![Voice Converter_01](https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap-01.jpg "Images for Voice Select dialog")
+<a href="https://to-fujita.github.io/Voice_Converter_with_Koeiromap/index.html"><img src="https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap.jpg"></a>
+  
+![Voice Converter_00](https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap.jpg"Images for Voice Converter with Koeiromap")
+![Voice Converter_01](https://to-fujita.github.io/Images/Voice_Converter_with_Koeiromap-01.jpg"Images for Voice Select dialog")
 
 ## 4. Details
 I have confirmed this program on the Microsoft Edge and Google Chrome on Windows 10/11 or Android.  
