@@ -1,7 +1,7 @@
 <!-- Android では、Google Chrome等の省電力設定を解除する必要があります。 -->
 <!DOCTYPE html>
 <html>
-  <title>Index.html for Voice Converter with Koeiro by T. Fujita 2023/05/01</title>
+  <title>Index.html for Voice Converter with Koeiro by T. Fujita 2023/05/04 Revised</title>
 
   <head>
     <meta charset="utf-8" />
@@ -46,7 +46,7 @@
 
 <!-- Dialog_Menu -->
 <dialog dialog id="dialog_menu">
-    <center><font size="4" color="#fff">
+    <center><font size="4" color="#000">
         ダイアログ（メニュー）
     </font></center>
     <hr>
@@ -75,6 +75,9 @@
         </li>
         <li class="nav__menu-item"><a>Other Options</a>
             <ul class="nav__submenu">
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_Voice_out()">変換データ発声</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_data_Save()">変換データ保存</a></li>
+                <li class="nav__submenu-item"> <a href="javascript: Dialog_open_Data_Load()">変換データ読込</a></li>
                 <li class="nav__submenu-item"> <a href="javascript: Dialog_open_dummy()">Dummy</a></li>
             </ul>
         </li>
@@ -92,7 +95,7 @@
 ・これは、情報ウィンドウです。<br><br>
 ・Microsoft Edge及びGoogle Chrome対応の音声変換器です。<br><br>
 ・「設定」から各種設定が可能です。<br><br>
-・音声の変更、各アイコンの変更が出来ます。<br><br>
+・音声の変更、各アイコンの変更ならびに変換した音声の保存等が出来ます。<br><br>
     <hr>
     <input type="button" class="rightButton" value="閉じる" onclick="Dialog_close_information()">
 </dialog>
@@ -108,6 +111,7 @@
 ・本プログラムは、rinna株式会社が提供するKoeiromap及びKoeiro APIを利用した音声変換器です。
 ・キー入力あるいは音声入力された言葉を指定された音声に変換して出力します。
 ・「Koeiromap及びKoeiro API」関連のライセンス及び利用規約については、「http://koeiromap.rinna.jp/」を参照ください。
+・変換された音声は、「Base64」テキスト形式で保存できます。「設定」から「Other Options」で、音声データの保存、保存された音声データの読込、ならびに音声データの発声が可能です。（但し、一番最後の音声データは保存されませんので、悪しからず！）
     </textarea>
     </center>
     <hr>
@@ -260,6 +264,62 @@
     <input type="button" class="rightButton" value="決　定" onclick="Dialog_close_VoiceOptions()">
 </dialog>
 
+<!-- Dialog Box for Data File Save -->
+<dialog dialog id="dialog_data_Save">
+    <center>
+        ダイアログ（Data Save/Shift-JIS）
+    </center>
+    <hr>
+    <span style="font-size: 16px;">　変換データの保存：　</span>
+    <center>
+        <div style="width:480px; height:220px; white-space: nowrap; overflow:scroll;">
+            <table border="1" id="dialog_data_Save_SJIS" style="font-size: 14px;"></table>
+        </div>
+    </center>
+    <hr>
+    <input type="button" class="leftButton" value="キャンセル" onclick="Dialog_cancel_data_Save()"> 
+    <a class="rightButton" id="data_download_SJIS" style="font-size: 18px;" href="#" download="Conv_Data.csv" onclick="Dialog_close_data_Save()">ファイル保存</a>
+</dialog>
+
+<!-- Dialog Box for Data File Load -->
+<dialog dialog id="dialog_data_Load">
+    <center>
+        ダイアログ（Conv File Loading）
+    </center>
+    <hr>
+    <span style="font-size: 16px;">　変換データ選択：　</span>
+    <center>
+        <input type="file" accept=".csv" name="dialog_CSV" id="dialog_CSV" value=""><hr>
+        <div style="width:480px; height:150px; overflow-y:scroll;">
+            <table border="1" id="dialog_DSP" style="font-size: 14px;"></table>
+        </div>
+    </center>
+    <hr>
+    <input type="button" class="leftButton" id="cancel_Load" value="キャンセル" onclick="Dialog_cancel_Data_Load()">
+    <input type="button" class="normalButton" value="音声発声" onclick="Dialog_open_Voice_out()" style="position:absolute; bottom:2px; left:40%;">
+    <input type="button" class="rightButton" id="close_Load" value="決　定" onclick="Dialog_close_Data_Load()">
+</dialog>
+
+<!-- Dialog Box for Voice Data Out -->
+<dialog dialog id="dialog_data_out">
+    <center>
+        ダイアログ（Output the Voice Data）
+    </center>
+    <hr>
+    
+    <center>
+        <label style="font-size: 16px;" for="sel_no">発音するデータ番号：</label>
+        <input type="number" id="sel_no" name="sel_no">
+        <div style="width:480px; height:200px; overflow-y:scroll;">
+            <table border="1" id="dialog_out" style="font-size: 14px;"></table>
+        </div>
+    </center>
+    <hr>
+    <input type="button" class="leftButton" id="cancel_Load" value="キャンセル" onclick="Dialog_cancel_Data_out()">
+    <input type="button" class="normalButton" value="音声発声" onclick="Dialog_voice_out()" style="position:absolute; bottom:2px; left:40%;">
+    <input type="button" class="rightButton" id="close_Load" value="クローズ" onclick="Dialog_close_Data_out()">
+</dialog>
+
 <!-- Dialog Box for Dummy -->
 <dialog dialog id="dialog_dummy">
     <center>
@@ -287,6 +347,7 @@
         recognition.lang = 'ja-JP';
         recognition.interimResults = false;
         recognition.continuous = true;
+        let voice = new Audio();
         let ST_id;
         let voice_x = 0;
         let voice_y = 0;
@@ -294,6 +355,12 @@
         let temp_voice_x = 0;
         let temp_voice_y = 0;
         let temp_voice_style = "talk";
+        let data_count = 0;
+        let data_audio = '';
+        var Temp_Data = new Array();
+        var CSV_Data = new Array();
+        var Temp_Text;
+
 
 // 音声入力、音声認識のON/OFF設定
         function OnButtonClick_01() {
@@ -326,10 +393,15 @@
             $("#chatbox").append(userHtml);
             document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
             var botHtml = '<p class="botText"><img src=' + bot_icon + ' alt="BOT" style="width:50px;height:50px;vertical-align:bottom;"/><span>' + rawText + '</span></p>';
-            $("#chatbox").append(botHtml);     
+            $("#chatbox").append(botHtml);
+            
             speech(rawText);
             document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
-
+            if (voice.ended) {
+                CSV_Data.push([data_count, Temp_Text, data_audio]);
+                data_count = data_count + 1;
+            }
+            Temp_Text = rawText;
         }
 
 // 音声合成での発声（Koeiro）
@@ -350,8 +422,8 @@
             })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data.audio);
-                const voice = new Audio(data.audio);
+                data_audio = data.audio;
+                voice = new Audio(data.audio);
                 voice.play();
                 voice.addEventListener("ended", function() {
                     if (Flag_Speech == 1) {
@@ -660,6 +732,151 @@
             }
 
             speech("本日は晴天なり。テスト、ワン、ツー、スリー。")
+        }
+
+// Save Conv Data
+        function Dialog_open_data_Save() {
+            var dialog_data_SJIS = document.getElementById('dialog_data_Save_SJIS');
+            var insertElement = '';
+            dialog_menu.close();
+            dialog_data_Save.showModal();
+            for (var i=0; i<CSV_Data.length; i++) {
+                insertElement += '<tr>';
+				    for (var j=0; j<CSV_Data[i].length; j++) {
+					    insertElement += '<td>' + CSV_Data[i][j] + '</td>';
+				    }
+				    insertElement += '</tr>';
+            }
+            dialog_data_SJIS.innerHTML = insertElement;
+        }
+        function Dialog_cancel_data_Save() {
+            dialog_data_Save.close();
+        }
+        function Dialog_close_data_Save() {
+            conv_Data_Save_SJIS();
+            dialog_data_Save.close();
+        }
+        function conv_Data_Save_SJIS() {
+            var Temp_str = '';
+            for (var i=0; i<CSV_Data.length; i++) {
+                for (var j=0; j<CSV_Data[i].length; j++) {
+                    Temp_str = Temp_str + CSV_Data[i][j] + ',';
+                }
+                Temp_str = Temp_str + '\n';
+            }
+            
+            var strArray = Encoding.stringToCode(Temp_str);
+            var convertedArray = Encoding.convert(strArray, 'SJIS', 'UNICODE');
+            var UintArray = new Uint8Array(convertedArray);
+            var blob = new Blob([UintArray], { type: 'text/csv' });
+            if (window.navigator.msSaveBlob) { 
+                window.navigator.msSaveBlob(blob, "Conv_Data.csv"); 
+                // msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+                window.navigator.msSaveOrOpenBlob(blob, "Conv_Data.csv"); 
+            } else {
+                document.getElementById("data_download_SJIS").href = window.URL.createObjectURL(blob);
+            }
+        }
+
+// Load Data File
+        var Text_Load = document.getElementById('dialog_DSP');
+
+        function Dialog_open_Data_Load() {
+            dialog_data_Load.showModal();
+            Dialog_TXT_Data_Load();
+        }
+        function Dialog_close_Data_Load() {
+            var insertElement = '';
+            CSV_Data = Temp_Data;
+			for (var i=0; i<CSV_Data.length; i++) {
+				insertElement += '<tr>';
+			    for (var j=0; j<CSV_Data[0].length; j++) {
+				    insertElement += '<td>' + CSV_Data[i][j] + '</td>';
+			    }
+			    insertElement += '</tr>';
+			}
+		    Text_Load.innerHTML = insertElement;
+            dialog_data_Load.close();
+        }
+        function Dialog_cancel_Data_Load() {
+            Text_Load.innerHTML = '<tr><td>' + '選択されていません！' + '</td></tr>';
+            dialog_data_Load.close();
+        }
+
+// Load Text Data
+        function Dialog_TXT_Data_Load() {
+	        var select = document.getElementById('dialog_CSV');
+	        var output_csv = document.getElementById('dialog_DSP');
+	        select.value = "";
+            output_csv.value = "";
+	        output_csv.innerHTML = "";
+            if(window.File) {
+	            select.addEventListener('change', function(e) {
+			        var fileData = e.target.files[0];
+			        var reader = new FileReader();
+			        reader.onerror = function() {
+			            alert('ファイル読み取りに失敗しました')
+			        }
+                    reader.onload = function(event) {
+				        var tmp = new Uint8Array(event.target.result);
+				        var tmp_text = Encoding.convert(tmp, 'UNICODE', 'AUTO');
+		  		        var txtArray = Encoding.codeToString(tmp_text);
+			            var lineArr = txtArray.split('\n');
+			            for (var i = 0; i < lineArr.length; i++) {
+					        Temp_Data[i] = lineArr[i].split(',');
+		  		        }
+
+				        var insertElement = '';
+				        for (var i=0; i<Temp_Data.length; i++) {
+				            insertElement += '<tr>';
+				            for (var j=0; j<Temp_Data[0].length; j++) {
+						        insertElement += '<td>' + Temp_Data[i][j] + '</td>';
+					        }
+					        insertElement += '</tr>';
+				        }
+				        output_csv.innerHTML = insertElement;
+			        }
+		            reader.readAsArrayBuffer(fileData);
+		        }, false);
+	        }
+        }
+
+// Voice Out
+        function Dialog_open_Voice_out() {
+            dialog_menu.close();
+            dialog_data_out.showModal();
+            var Text_Out = document.getElementById('dialog_out');
+            var insertElement = '';
+            if (CSV_Data == "") {
+                CSV_Data = Temp_Data;
+            }
+            for (var i=0; i<CSV_Data.length; i++) {
+				insertElement += '<tr>';
+			    for (var j=0; j<CSV_Data[0].length; j++) {
+				    insertElement += '<td>' + CSV_Data[i][j] + '</td>';
+			    }
+			    insertElement += '</tr>';
+			}
+		    Text_Out.innerHTML = insertElement;
+        }
+        function Dialog_cancel_Data_out() {
+            dialog_data_out.close();            
+        }
+        function Dialog_close_Data_out() {
+            dialog_data_out.close();            
+        }
+        function Dialog_voice_out() {
+
+            var temp_no = document.getElementById('sel_no').value;
+            if (temp_no < 0) {temp_no = 0;}
+            if (temp_no >= CSV_Data[1].length) {temp_no = CSV_Data[1].length - 1;}
+            if (CSV_Data[temp_no][2] == 'data:audio/x-wav;base64') {
+                voice = new Audio('data:audio/wav;base64,' + CSV_Data[temp_no][3] );
+            } else {
+                voice = new Audio(CSV_Data[temp_no][2] );
+            }
+            
+            voice.play();
         }
 
 // for Dummy
