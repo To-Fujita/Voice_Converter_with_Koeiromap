@@ -23,11 +23,11 @@ I have confirmed this program on the Microsoft Edge and Google Chrome on Windows
 (2) If you input the text data by the keyboard, please input to the text box by Japanese. After input the "return key", the input text data will be read with the specified voice.  
 (3) If you want to convert your voice to specified voice, please click the "音声入力OFF" above. Then, the display will be changed to the "音声入力ON". Afer that, please speak any japanese word, then, the specified voice will be outputted.  
 (4) If you change the specified voice, please click the "音声変更", then set the "Voice-x", the "Voice-y" or the "音声スタイル".
-(5) The converted voice data is able to save and to load as local file.
+(5) The converted voice data is able to save and to load as local file. Please click the "設定", then click the "OTHER OPTIONS". You can save or load the converted voice data as Base64 text data.
   
 ## 5. History
 2023/05/01: Upload the first version.  
-2023/05/06: Revised for adding to save the converted data.
+2023/05/06: Revised for adding to save and to load the converted data.
   
 ## 6. Reference
 - [Koeiromap & Koeiro](http://koeiromap.rinna.jp/)
