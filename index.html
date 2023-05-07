@@ -111,7 +111,7 @@
 ・本プログラムは、rinna株式会社が提供するKoeiromap及びKoeiro APIを利用した音声変換器です。
 ・キー入力あるいは音声入力された言葉を指定された音声に変換して出力します。
 ・「Koeiromap及びKoeiro API」関連のライセンス及び利用規約については、「http://koeiromap.rinna.jp/」を参照ください。
-・変換された音声は、「Base64」テキスト形式で保存できます。「設定」から「Other Options」で、音声データの保存、保存された音声データの読込、ならびに音声データの発声が可能です。（但し、一番最後の音声データは保存されませんので、悪しからず！）
+・変換された音声は、「Base64」テキスト形式で保存できます。「設定」から「Other Options」で、音声データの保存、保存された音声データの読込、ならびに音声データの発声が可能です。
     </textarea>
     </center>
     <hr>
@@ -296,7 +296,7 @@
     </center>
     <hr>
     <input type="button" class="leftButton" id="cancel_Load" value="キャンセル" onclick="Dialog_cancel_Data_Load()">
-    <input type="button" class="normalButton" value="発声確認" onclick="Dialog_open_Voice_out()" style="position:absolute; bottom:2px; left:40%;">
+    <input type="button" class="normalButton" value="音声確認" onclick="Dialog_open_Voice_out()" style="position:absolute; bottom:2px; left:40%;">
     <input type="button" class="rightButton" id="close_Load" value="決　定" onclick="Dialog_close_Data_Load()">
 </dialog>
 
@@ -356,11 +356,9 @@
         let temp_voice_y = 0;
         let temp_voice_style = "talk";
         let data_count = 0;
-        let data_audio = '';
+        let test_flag = 0;
         var Temp_Data = new Array();
         var CSV_Data = new Array();
-        var Temp_Text;
-
 
 // 音声入力、音声認識のON/OFF設定
         function OnButtonClick_01() {
@@ -397,11 +395,6 @@
             
             speech(rawText);
             document.getElementById("userInput").scrollIntoView({ block: "start", behavior: "smooth" });
-            if (voice.ended) {
-                CSV_Data.push([data_count, Temp_Text, data_audio]);
-                data_count = data_count + 1;
-            }
-            Temp_Text = rawText;
         }
 
 // 音声合成での発声（Koeiro）
@@ -422,15 +415,20 @@
             })
             .then((response) => response.json())
             .then((data) => {
-                data_audio = data.audio;
                 voice = new Audio(data.audio);
                 voice.play();
                 voice.addEventListener("ended", function() {
                     if (Flag_Speech == 1) {
                         VoiceInputOn();
                     }
+                    if (test_flag == 0) {
+                        CSV_Data.push([data_count, answer, data.audio]);
+                        data_count = data_count + 1;
+                    }
+                    test_flag = 0;
                 }, false);
             });
+ 
         }
 
 // 音声認識処理
@@ -730,7 +728,7 @@
             } else {
                 voice_style = "talk"
             }
-
+            test_flag = 1;
             speech("本日は晴天なり。テスト、ワン、ツー、スリー。")
         }
 
@@ -866,7 +864,6 @@
             dialog_data_out.close();            
         }
         function Dialog_voice_out() {
-
             var temp_no = document.getElementById('sel_no').value;
             if (temp_no < 0) {temp_no = 0;}
             if (temp_no >= CSV_Data[1].length) {temp_no = CSV_Data[1].length - 1;}
@@ -875,7 +872,6 @@
             } else {
                 voice = new Audio(CSV_Data[temp_no][2] );
             }
-            
             voice.play();
         }
 
