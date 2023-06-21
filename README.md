@@ -1,7 +1,7 @@
 # Voice_Converter_with_Koeiromap
 
 ## 1. Description
-This is a voice converter for Japanese based on the Koeiromap & Koeiro API. You can convert to the selected voice from the text inputed by keyboard and/or your voice.  
+This is a voice converter for Japanese based on the Koeiromap & Koeiro API. You can convert to the selected voice from the text inputed by keyboard and/or your voice. Unfortunately, the free Koeiro API service will end on July 18, 2023.　The demo in this article uses the free Koeiro API service, so I think it will not be available after that date, so it's bad!  
 
 ## 2. Operational Environment
 - Browser: Microsoft Edge or Google Chrome on Windows 10/11 or Android
